@@ -30,7 +30,7 @@ Unzip archive and copy files to the directory:
 C:\Users\\\<Username>\AppData\Roaming\Blender Foundation\Blender\\\<Blender version>\extensions\user_default\TCourier
 
 ### Nuke
-#### Nukeshared
+#### NukeShared
 If you are using NukeShared, copy the files to:
 * ...\NukeShared\Repository\Nodes\ - *(if you want scripts appear on the left panel)*
 * ...\NukeShared\Repository\Nuke\ - *(if you want scripts appear on the header)*
