@@ -1,0 +1,17 @@
+schema_version = "1.0.0"
+
+id = "TCourier"
+version = "2.0.0"
+name = "TCourier"
+tagline = "Fast cross-software import-export bridge for tracking data"
+tags = ["Import-Export"]
+type = "add-on"
+blender_version_min = "4.2.0"
+
+maintainer = "Yaroslav Yushkevich"
+website = "https://github.com/YaroslavYushk"
+
+license = ["SPDX:GPL-3.0-or-later",]
+
+[permissions]
+files = "Import/export data from/to disk for data exchange with other software"
