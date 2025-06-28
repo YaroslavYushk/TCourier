@@ -17,7 +17,7 @@ Fast cross-software import-export bridge for tracking data
 ### 3DE
 Copy script files to one of your scripts folder:
 * Your custom scripts folder defined in 3DE Preferences
-* C:\Users\\\<Username>\AppData\Roaming\.3dequalizer\py_scripts  (default user's scripts folder)
+* C:\Users\\\<Username>\AppData\Roaming\\.3dequalizer\py_scripts  (default user's scripts folder)
 * <3DE installation folder>\sys_data\py_scripts  (not recommended)
 
 ### Blender
