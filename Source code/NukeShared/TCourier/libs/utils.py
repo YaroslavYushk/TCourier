@@ -1,6 +1,7 @@
 import nuke
 import json
 import os
+import tempfile
 
 
 def call_error(message: str, title="Error"):
@@ -18,14 +19,15 @@ def clean_name(name: str) -> str:
 
 
 def load_data(data_type: str) -> dict:
+    temp_dir = tempfile.gettempdir()
     if data_type == 'camera':
-        path_data = (os.getenv('TEMP') + r'\TCourier'
+        path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_camera.json')
     elif data_type == 'geo':
-        path_data = (os.getenv('TEMP') + r'\TCourier'
+        path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_geo.json')
     elif data_type == 'obj_track':
-        path_data = (os.getenv('TEMP') + r'\TCourier'
+        path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_obj_track.json')
     else:
         call_error("Wrong data type")
@@ -35,21 +37,22 @@ def load_data(data_type: str) -> dict:
             data_import = json.load(file_data)
         print(f"TCourier: Data loaded successfully - '{data_type}'")
     except Exception:
-        print(f"TCourier: Something went wrong "
-              f"when was trying to load data - '{data_type}'")
+        print(f"TCourier: An error occurred while loading data - '{data_type}'")
+        return None
     return data_import
 
 
 def save_data(data_export: dict, data_type: str):
-    os.makedirs(os.getenv('TEMP') + r'\TCourier', exist_ok=True)
+    temp_dir = tempfile.gettempdir()
+    os.makedirs(temp_dir + r'\TCourier', exist_ok=True)
     if data_type == 'camera':
-        path_data = (os.getenv('TEMP') + r'\TCourier'
+        path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_camera.json')
     elif data_type == 'geo':
-        path_data = (os.getenv('TEMP') + r'\TCourier'
+        path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_geo.json')
     elif data_type == 'obj_track':
-        path_data = (os.getenv('TEMP') + r'\TCourier'
+        path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_obj_track.json')
     else:
         call_error("Wrong data type")
@@ -60,8 +63,7 @@ def save_data(data_export: dict, data_type: str):
         os.chmod(path_data, 0o666)
         print(f"TCourier: Data saved successfully - '{data_type}'")
     except Exception:
-        print(f"TCourier: Something went wrong "
-              f"when was trying to save  data - '{data_type}'")
+        print(f"TCourier: An error occurred while saving data - '{data_type}'")
 
 
 def check_space(target):

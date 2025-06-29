@@ -8,6 +8,7 @@ from math import pi
 from libs.utils import clean_name
 from libs.utils import load_data
 from libs.utils import find_free_space
+from libs.utils import call_error
 
 
 def apply_camera_keyframes(node_camera, keyframes_camera, is_zoom):
@@ -46,6 +47,9 @@ def apply_camera_keyframes(node_camera, keyframes_camera, is_zoom):
 
 def execute():
     data_import = load_data('camera')
+    if data_import is None:
+        call_error("Data loading failed. The file may be missing or damaged.")
+        return
     root = nuke.root()
 
     root['fps'].setValue(data_import['fps'])

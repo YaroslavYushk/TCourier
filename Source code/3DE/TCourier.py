@@ -15,7 +15,7 @@
 # 3DE4.script.addlabel: Import Geo
 # 3DE4.script.addlabel: Import Obj track
 #
-# Version - 2.0.0
+# Version - 2.0.1
 # Author - Yaroslav Yushkevich
 # Bugs, ideas, feedback - https://github.com/YaroslavYushk/
 #
@@ -375,7 +375,8 @@ if __name__ == "__main__":
         result = TCourier.import_obj_track.execute()
         msg = "Object track data loaded successfully"
 
-    if result is True:
-        tde4.postQuestionRequester(
-            "TCourier", msg, "Ok")
-        result = False
+    if label != '~ TCourier panel ~':
+        if result is True:
+            tde4.postQuestionRequester(
+                "TCourier", msg, "Ok")
+            result = False

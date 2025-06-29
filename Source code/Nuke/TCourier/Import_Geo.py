@@ -51,6 +51,9 @@ def create_obj_from_json(data_model):
 
 def execute():
     data_import = load_data('geo')
+    if data_import is None:
+        call_error("Data loading failed. The file may be missing or damaged.")
+        return
 
     tile_height = nuke.toNode("preferences")["TileHeight"].value()
     tile_width = nuke.toNode("preferences")["TileWidth"].value()
