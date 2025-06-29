@@ -41,6 +41,11 @@ class TCourier_Import_camera(bpy.types.Operator):
 
     def execute(self, context):
         data_import = load_data('camera')
+        if data_import is None:
+            self.report({'ERROR'},
+                        message=("Data loading failed. "
+                                 "The file may be missing or damaged."))
+            return {'CANCELLED'}
 
         # region Collection
         if "Scene_Import" not in bpy.data.collections:

@@ -10,6 +10,11 @@ class TCourier_Import_undistort(bpy.types.Operator):
 
     def execute(self, context):
         data_import = load_data('undistort')
+        if data_import is None:
+            self.report({'ERROR'},
+                        message=("Data loading failed. "
+                                 "The file may be missing or damaged."))
+            return {'CANCELLED'}
 
         bpy.ops.image.open(
             filepath=data_import['filepath'],

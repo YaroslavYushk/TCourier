@@ -96,6 +96,11 @@ class TCourier_Import_obj_track(bpy.types.Operator):
 
     def execute(self, context):
         data_import = load_data('obj_track')
+        if data_import is None:
+            self.report({'ERROR'},
+                        message=("Data loading failed. "
+                                 "The file may be missing or damaged."))
+            return {'CANCELLED'}
 
         if "Scene_Import" not in bpy.data.collections:
             collection_proj = bpy.data.collections.new("Scene_Import")

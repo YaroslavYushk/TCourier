@@ -28,6 +28,11 @@ class TCourier_Import_points(bpy.types.Operator):
 
     def execute(self, context):
         data_import = load_data('points')
+        if data_import is None:
+            self.report({'ERROR'},
+                        message=("Data loading failed. "
+                                 "The file may be missing or damaged."))
+            return {'CANCELLED'}
 
         if "Points" not in bpy.data.collections:
             collection_proj = bpy.data.collections.new("Points")
