@@ -6,6 +6,7 @@ import nuke
 
 from libs.utils import call_error
 from libs.utils import save_data
+from libs.utils import make_relative_path_absolute
 
 from libs.matrix_operations import build_matrix_4x4_from_list
 from libs.matrix_operations import get_translation_from_matrix_4x4
@@ -47,14 +48,19 @@ def get_model_data(node_ReadGeo):
     scale = get_scale_from_matrix_4x4(geo_matrix)
     rotation_mat = get_rotation_matrix_from_matrix_4x4(geo_matrix)
     quaternion = get_quaternion_from_rotation_matrix_4x4(rotation_mat)
-    vertices, faces = get_mesh_data_from_file(node_ReadGeo["file"].value())
+
+    model_filepath = nuke.filename(node_ReadGeo)
+    if model_filepath.startswith("."):
+        model_filepath = make_relative_path_absolute(model_filepath)
+
+    vertices, faces = get_mesh_data_from_file(model_filepath)
 
     data_model = {
         'name': node_ReadGeo.name(),
         'position': position,
         'quaternion': quaternion,
         'scale': scale,
-        'model_filepath': str(node_ReadGeo["file"].value()),
+        'model_filepath': model_filepath,
         'vertices': vertices,
         'faces': faces,
     }

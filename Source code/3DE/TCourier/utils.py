@@ -27,6 +27,9 @@ def load_data(data_type: str) -> dict:
     elif data_type == 'points':
         path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_points.json')
+    elif data_type == '2d_track':
+        path_data = (temp_dir + r'\TCourier'
+                     + r'\TCourier_data_2d_track.json')
     else:
         path_data = None
         call_error("Wrong data type")
@@ -58,6 +61,9 @@ def save_data(data_export: dict, data_type: str):
     elif data_type == 'points':
         path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_points.json')
+    elif data_type == '2d_track':
+        path_data = (temp_dir + r'\TCourier'
+                     + r'\TCourier_data_2d_track.json')
     else:
         path_data = None
         call_error("Wrong data type")

@@ -29,6 +29,9 @@ def load_data(data_type: str) -> dict:
     elif data_type == 'obj_track':
         path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_obj_track.json')
+    elif data_type == '2d_track':
+        path_data = (temp_dir + r'\TCourier'
+                     + r'\TCourier_data_2d_track.json')
     else:
         call_error("Wrong data type")
         return
@@ -54,6 +57,9 @@ def save_data(data_export: dict, data_type: str):
     elif data_type == 'obj_track':
         path_data = (temp_dir + r'\TCourier'
                      + r'\TCourier_data_obj_track.json')
+    elif data_type == '2d_track':
+        path_data = (temp_dir + r'\TCourier'
+                     + r'\TCourier_data_2d_track.json')
     else:
         call_error("Wrong data type")
         return
@@ -95,3 +101,11 @@ def find_free_space(target):
             target.setXpos(int(target.xpos() + tile_width))
         if is_space_free is True:
             break
+
+
+def make_relative_path_absolute(filepath):
+    from pathlib import Path
+    relative_path = Path(filepath)
+    proj_path = Path(nuke.script_directory())
+    absolute_path = (proj_path / relative_path).resolve()
+    return str(absolute_path)

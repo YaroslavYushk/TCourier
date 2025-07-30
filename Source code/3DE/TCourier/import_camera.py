@@ -53,7 +53,6 @@ def execute():
     data_import = load_data('camera')
     if data_import is None:
         call_error("Data loading failed. The file may be missing or damaged.")
-        return
 
     pgroup_list = tde4.getPGroupList()
     pgroup_id = None
