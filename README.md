@@ -9,6 +9,7 @@ Fast cross-software import-export bridge for tracking data
 ## Export/Import options
 * Camera
 * 3D Points
+* 2D Trackers
 * Undistorted footage
 * Geo
 * Object track
