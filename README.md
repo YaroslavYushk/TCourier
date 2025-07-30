@@ -28,6 +28,7 @@ And select .zip archive
 
 Manual installation:
 Unzip archive and copy files to the directory:
+
 C:\Users\\\<Username>\AppData\Roaming\Blender Foundation\Blender\\\<Blender version>\extensions\user_default\TCourier
 
 ### Nuke
@@ -39,6 +40,7 @@ If you are using NukeShared, copy the files to:
 #### Nuke (basic)
 If you are not using NukeShared, copy files in your plugins folder instead:
 C:\Users\\\<Username>\.nuke\TCourier
+
 Then open (or create) menu.py file and add next lines of code to create menu at the header:
 
 ```
