@@ -12,14 +12,25 @@ def get_camera_keyframes(cam_obj):
     for frame in range(frame_start, frame_end + 1):
         fcurves = cam_obj.animation_data.action.fcurves
 
-        euler = mathutils.Euler((
-            fcurves.find('rotation_euler', index=0).evaluate(frame),
-            fcurves.find('rotation_euler', index=1).evaluate(frame),
-            fcurves.find('rotation_euler', index=2).evaluate(frame)),
-            'XYZ')
         quat_fix = mathutils.Quaternion(
             mathutils.Vector([1, -1, 0, 0])).normalized()
-        quaternion = quat_fix @ euler.to_quaternion().normalized()
+
+        if fcurves.find('rotation_euler', index=0) is not None:
+            euler = mathutils.Euler((
+                fcurves.find('rotation_euler', index=0).evaluate(frame),
+                fcurves.find('rotation_euler', index=1).evaluate(frame),
+                fcurves.find('rotation_euler', index=2).evaluate(frame)),
+                'XYZ')
+            quaternion = quat_fix @ euler.to_quaternion().normalized()
+        elif fcurves.find('rotation_quaternion', index=0) is not None:
+            quat_orig = mathutils.Quaternion((
+                fcurves.find('rotation_quaternion', index=0).evaluate(frame),
+                fcurves.find('rotation_quaternion', index=1).evaluate(frame),
+                fcurves.find('rotation_quaternion', index=2).evaluate(frame),
+                fcurves.find('rotation_quaternion', index=3).evaluate(frame)))
+            quaternion = quat_fix @ quat_orig.normalized()
+        else:
+            return None
 
         keyframes_camera[str(frame)] = {
             'position': [fcurves.find('location', index=0).evaluate(frame),
@@ -55,6 +66,10 @@ class TCourier_Export_camera(bpy.types.Operator):
                     is_zoom = True
 
         keyframes_camera = get_camera_keyframes(cam_obj)
+        if keyframes_camera is None:
+            self.report({'ERROR'},
+                        message=("Something went wrong"))
+            return {'CANCELLED'}
 
         data_export = {
             'camera_name': cam_obj.name,

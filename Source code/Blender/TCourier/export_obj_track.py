@@ -11,17 +11,30 @@ def get_pgroup_keyframes(pgroup_null, frame_start, frame_end):
 
         quat_fix = mathutils.Quaternion(
             mathutils.Vector([1, -1, 0, 0])).normalized()
-
-        euler = mathutils.Euler((
-            fcurves.find('rotation_euler', index=0).evaluate(frame),
-            fcurves.find('rotation_euler', index=1).evaluate(frame),
-            fcurves.find('rotation_euler', index=2).evaluate(frame)),
-            'XYZ')
         quat_fix_2 = mathutils.Quaternion(
             mathutils.Vector([1, 1, 0, 0])).normalized()
-        quaternion = (quat_fix
-                      @ euler.to_quaternion().normalized()
-                      @ quat_fix_2)
+
+        if fcurves.find('rotation_euler', index=0) is not None:
+            euler = mathutils.Euler((
+                fcurves.find('rotation_euler', index=0).evaluate(frame),
+                fcurves.find('rotation_euler', index=1).evaluate(frame),
+                fcurves.find('rotation_euler', index=2).evaluate(frame)),
+                'XYZ')
+            quaternion = (quat_fix
+                          @ euler.to_quaternion().normalized()
+                          @ quat_fix_2)
+        elif fcurves.find('rotation_quaternion', index=0) is not None:
+            quat_orig = mathutils.Quaternion((
+                fcurves.find('rotation_quaternion', index=0).evaluate(frame),
+                fcurves.find('rotation_quaternion', index=1).evaluate(frame),
+                fcurves.find('rotation_quaternion', index=2).evaluate(frame),
+                fcurves.find('rotation_quaternion', index=3).evaluate(frame)))
+            quaternion = (quat_fix
+                          @ quat_orig.normalized()
+                          @ quat_fix_2)
+        else:
+            return None
+
         pgroup_keyframes[frame] = {
             'position': [fcurves.find('location', index=0).evaluate(frame),
                          fcurves.find('location', index=2).evaluate(frame),
@@ -126,12 +139,18 @@ class TCourier_Export_obj_track(bpy.types.Operator):
         frame_start = bpy.context.scene.frame_start
         frame_end = bpy.context.scene.frame_end
 
+        pgroup_keyframes = get_pgroup_keyframes(
+            pgroup_null, frame_start, frame_end),
+        if pgroup_keyframes is None:
+            self.report({'ERROR'},
+                        message=("Something went wrong"))
+            return {'CANCELLED'}
+
         data_export = {
             'frame_start': frame_start,
             'frame_end': frame_end,
             'pgroup_name': pgroup_null.name,
-            'pgroup_keyframes': get_pgroup_keyframes(
-                pgroup_null, frame_start, frame_end),
+            'pgroup_keyframes': pgroup_keyframes,
             'data_models': get_obj_data(obj_list),
         }
 

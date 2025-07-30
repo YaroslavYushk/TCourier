@@ -55,10 +55,10 @@ def execute():
     data_import = load_data('geo')
     if data_import is None:
         call_error("Data loading failed. The file may be missing or damaged.")
-        return
 
     pgroup_id = tde4.getCurrentPGroup()
-    if pgroup_id == 0: call_error('There is no Point group')
+    if pgroup_id is None:
+        call_error('There is no Point group')
     if tde4.getPGroupType(pgroup_id) != 'CAMERA':
         call_error('Current Point Group is not `Camera` type')
 

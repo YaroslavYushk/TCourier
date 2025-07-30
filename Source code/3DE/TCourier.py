@@ -11,11 +11,13 @@
 # 3DE4.script.addlabel: Export Geo
 # 3DE4.script.addlabel: Export Undistort
 # 3DE4.script.addlabel: Export Obj track
+# 3DE4.script.addlabel: Export 2d track
 # 3DE4.script.addlabel: Import Camera
 # 3DE4.script.addlabel: Import Geo
 # 3DE4.script.addlabel: Import Obj track
+# 3DE4.script.addlabel: Import 2d track
 #
-# Version - 2.0.1
+# Version - 2.1.0
 # Author - Yaroslav Yushkevich
 # Bugs, ideas, feedback - https://github.com/YaroslavYushk/
 #
@@ -28,9 +30,12 @@ import TCourier.export_points
 import TCourier.export_geo
 import TCourier.export_undistort
 import TCourier.export_obj_track
+import TCourier.export_2d_track
 import TCourier.import_camera
 import TCourier.import_geo
 import TCourier.import_obj_track
+import TCourier.import_2d_track
+
 
 
 def tcourier_export_scene(requester, widget, action):
@@ -87,6 +92,15 @@ def tcourier_export_obj_track(requester, widget, action):
     return
 
 
+def tcourier_export_2d_track(requester, widget, action):
+    result = TCourier.export_2d_track.execute()
+    if result is True:
+        tde4.setWidgetLabel(
+            requester, "btn_export_2d_track",
+            "+       Export 2d track       +")
+    return
+
+
 def tcourier_import_camera(requester, widget, action):
     result = TCourier.import_camera.execute()
     if result is True:
@@ -111,6 +125,15 @@ def tcourier_import_obj_track(requester, widget, action):
         tde4.setWidgetLabel(
             requester, "btn_import_obj_track",
             "+       Import Object track       +")
+    return
+
+
+def tcourier_import_2d_track(requester, widget, action):
+    result = TCourier.import_2d_track.execute()
+    if result is True:
+        tde4.setWidgetLabel(
+            requester, "btn_import_2d_track",
+            "+       Import 2d track       +")
     return
 
 
@@ -266,6 +289,22 @@ def draw_panel():
         tde4.setWidgetCallbackFunction(
             requester, "btn_export_obj_track", "tcourier_export_obj_track")
 
+        # Button "Export 2d track"
+        tde4.addButtonWidget(
+            requester, "btn_export_2d_track", "Export 2d track")
+        tde4.setWidgetOffsets(
+            requester, "btn_export_2d_track", 10, 90, 20, 0)
+        tde4.setWidgetAttachModes(
+            requester, "btn_export_2d_track", "ATTACH_POSITION",
+            "ATTACH_POSITION", "ATTACH_WIDGET", "ATTACH_NONE")
+        tde4.setWidgetLinks(
+            requester, "btn_export_2d_track",
+            "", "", "btn_export_obj_track", "")
+        tde4.setWidgetSize(
+            requester, "btn_export_2d_track", 140, 20)
+        tde4.setWidgetCallbackFunction(
+            requester, "btn_export_2d_track", "tcourier_export_2d_track")
+
         # Label "Import"
         tde4.addLabelWidget(
             requester, "label_02", "Import:", "ALIGN_LABEL_CENTER")
@@ -275,7 +314,7 @@ def draw_panel():
             requester, "label_02", "ATTACH_POSITION",
             "ATTACH_POSITION", "ATTACH_WIDGET", "ATTACH_NONE")
         tde4.setWidgetLinks(
-            requester, "label_02", "", "", "btn_export_obj_track", "")
+            requester, "label_02", "", "", "btn_export_2d_track", "")
         tde4.setWidgetSize(requester, "label_02", 60, 20)
 
         # Button "Import camera"
@@ -324,6 +363,22 @@ def draw_panel():
         tde4.setWidgetCallbackFunction(
             requester, "btn_import_obj_track", "tcourier_import_obj_track")
 
+        # Button "Import 2d track"
+        tde4.addButtonWidget(
+            requester, "btn_import_2d_track", "Import 2d track")
+        tde4.setWidgetOffsets(
+            requester, "btn_import_2d_track", 10, 90, 20, 0)
+        tde4.setWidgetAttachModes(
+            requester, "btn_import_2d_track", "ATTACH_POSITION",
+            "ATTACH_POSITION", "ATTACH_WIDGET", "ATTACH_NONE")
+        tde4.setWidgetLinks(
+            requester, "btn_import_2d_track",
+            "", "", "btn_import_obj_track", "")
+        tde4.setWidgetSize(
+            requester, "btn_import_2d_track", 160, 20)
+        tde4.setWidgetCallbackFunction(
+            requester, "btn_import_2d_track", "tcourier_import_2d_track")
+
         _TCourier_requester = requester
 
 #
@@ -336,7 +391,7 @@ def draw_panel():
                 _TCourier_requester, "TCourier", 0, 0, "_TCourier_update")
         else:
             tde4.postCustomRequesterAndContinue(
-                _TCourier_requester, "TCourier", 340, 470, "_TCourier_update")
+                _TCourier_requester, "TCourier", 340, 545, "_TCourier_update")
     else: tde4.postQuestionRequester(
         "TCourier",
         "Window/Pane is already posted, close manually first!",
@@ -364,6 +419,9 @@ if __name__ == "__main__":
     if label == 'Export Obj track':
         result = TCourier.export_obj_track.execute()
         msg = "Object track data saved successfully"
+    if label == 'Export 2d track':
+        result = TCourier.export_2d_track.execute()
+        msg = "2d track data saved successfully"
 
     if label == 'Import Camera':
         result = TCourier.import_camera.execute()
@@ -374,6 +432,9 @@ if __name__ == "__main__":
     if label == 'Import Obj track':
         result = TCourier.import_obj_track.execute()
         msg = "Object track data loaded successfully"
+    if label == 'Import 2d track':
+        result = TCourier.import_2d_track.execute()
+        msg = "2d track data loaded successfully"
 
     if label != '~ TCourier panel ~':
         if result is True:
