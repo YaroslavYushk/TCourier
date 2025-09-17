@@ -27,11 +27,21 @@ def apply_obj_track_keyframes(node_transformGeo, data_keyframes):
             data_keyframes[str(frame)]['position'][1], int(frame), 1)
         node_transformGeo["translate"].setValueAt(
             data_keyframes[str(frame)]['position'][2], int(frame), 2)
-        quaternion = nuke.nukemath.Quaternion(
-            data_keyframes[str(frame)]['quaternion'][0],
-            data_keyframes[str(frame)]['quaternion'][1],
-            data_keyframes[str(frame)]['quaternion'][2],
-            data_keyframes[str(frame)]['quaternion'][3])
+
+        if (((nuke.NUKE_VERSION_MAJOR == 13) and (nuke.NUKE_VERSION_MINOR < 2))
+                or (nuke.NUKE_VERSION_MAJOR <= 12)):
+            quaternion = nuke.math.Quaternion(
+                data_keyframes[str(frame)]['quaternion'][0],
+                data_keyframes[str(frame)]['quaternion'][1],
+                data_keyframes[str(frame)]['quaternion'][2],
+                data_keyframes[str(frame)]['quaternion'][3])
+        else:
+            quaternion = nuke.nukemath.Quaternion(
+                data_keyframes[str(frame)]['quaternion'][0],
+                data_keyframes[str(frame)]['quaternion'][1],
+                data_keyframes[str(frame)]['quaternion'][2],
+                data_keyframes[str(frame)]['quaternion'][3])
+
         matrix = quaternion.matrix()
         euler = matrix.rotationsZXY()
         node_transformGeo["rotate"].setValueAt(

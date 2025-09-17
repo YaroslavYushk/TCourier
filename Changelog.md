@@ -1,3 +1,6 @@
+### v2.1.1
+* Improved old versions of Nuke compatibility
+
 ### v2.1.0
 * 2d tracks import/export between 3DEqualizer and Nuke
 * Fixed an export issue for blender when camera or object were animated in unexpected rotation order
