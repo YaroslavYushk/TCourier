@@ -52,7 +52,6 @@ import TCourier.Export_2d_Track
 import TCourier.Import_Camera
 import TCourier.Import_Geo
 import TCourier.Import_Obj_Track
-import TCourier.Import_Scene
 import TCourier.Import_2d_Track
 nuke.menu("Nuke").addCommand("TCourier/Export Camera", TCourier.Export_Camera.execute, icon="Export_Camera.png")
 nuke.menu("Nuke").addCommand("TCourier/Export Geo", TCourier.Export_Geo.execute, icon="Export_Geo.png")
@@ -61,6 +60,5 @@ nuke.menu("Nuke").addCommand("TCourier/Export 2d Track", TCourier.Export_2d_Trac
 nuke.menu("Nuke").addCommand("TCourier/Import Camera", TCourier.Import_Camera.execute, icon="Import_Camera.png")
 nuke.menu("Nuke").addCommand("TCourier/Import Geo", TCourier.Import_Geo.execute, icon="Import_Geo.png")
 nuke.menu("Nuke").addCommand("TCourier/Import Obj Track", TCourier.Import_Obj_Track.execute, icon="Import_Obj_Track.png")
-nuke.menu("Nuke").addCommand("TCourier/Import Scene", TCourier.Import_Scene.execute, icon="Import_Scene.png")
 nuke.menu("Nuke").addCommand("TCourier/Import 2d Track", TCourier.Import_2d_Track.execute, icon="Import_2d_Track.png")
 ```
