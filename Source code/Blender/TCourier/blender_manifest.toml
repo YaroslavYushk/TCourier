@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "TCourier"
-version = "2.1.0"
+version = "2.1.1"
 name = "TCourier"
 tagline = "Fast cross-software import-export bridge for tracking data"
 tags = ["Import-Export"]
@@ -14,4 +14,5 @@ website = "https://github.com/YaroslavYushk"
 license = ["SPDX:GPL-3.0-or-later",]
 
 [permissions]
+
 files = "Import/export data from/to disk for data exchange with other software"
