@@ -33,11 +33,21 @@ def apply_camera_keyframes(node_camera, keyframes_camera, is_zoom):
             keyframes_camera[str(frame)]['position'][1], int(frame), 1)
         node_camera["translate"].setValueAt(
             keyframes_camera[str(frame)]['position'][2], int(frame), 2)
-        quaternion = nuke.nukemath.Quaternion(
-            keyframes_camera[str(frame)]['quaternion'][0],
-            keyframes_camera[str(frame)]['quaternion'][1],
-            keyframes_camera[str(frame)]['quaternion'][2],
-            keyframes_camera[str(frame)]['quaternion'][3])
+
+        if (((nuke.NUKE_VERSION_MAJOR == 13) and (nuke.NUKE_VERSION_MINOR < 2))
+                or (nuke.NUKE_VERSION_MAJOR <= 12)):
+            quaternion = nuke.math.Quaternion(
+                keyframes_camera[str(frame)]['quaternion'][0],
+                keyframes_camera[str(frame)]['quaternion'][1],
+                keyframes_camera[str(frame)]['quaternion'][2],
+                keyframes_camera[str(frame)]['quaternion'][3])
+        else:
+            quaternion = nuke.nukemath.Quaternion(
+                keyframes_camera[str(frame)]['quaternion'][0],
+                keyframes_camera[str(frame)]['quaternion'][1],
+                keyframes_camera[str(frame)]['quaternion'][2],
+                keyframes_camera[str(frame)]['quaternion'][3])
+
         matrix = quaternion.matrix()
         euler = matrix.rotationsZXY()
         node_camera["rotate"].setValueAt(euler[0] * 180 / pi, int(frame), 0)
