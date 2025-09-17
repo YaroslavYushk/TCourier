@@ -125,11 +125,21 @@ def execute():
         node_transformGeo["translate"].setValue(data_models[m]['position'][2], 2)
         # rotation
         node_transformGeo["rot_order"].setValue('ZXY')
-        quaternion = nuke.nukemath.Quaternion(
-            data_models[m]['quaternion'][0],
-            data_models[m]['quaternion'][1],
-            data_models[m]['quaternion'][2],
-            data_models[m]['quaternion'][3])
+
+        if (((nuke.NUKE_VERSION_MAJOR == 13) and (nuke.NUKE_VERSION_MINOR < 2))
+                or (nuke.NUKE_VERSION_MAJOR <= 12)):
+            quaternion = nuke.math.Quaternion(
+                data_models[m]['quaternion'][0],
+                data_models[m]['quaternion'][1],
+                data_models[m]['quaternion'][2],
+                data_models[m]['quaternion'][3])
+        else:
+            quaternion = nuke.nukemath.Quaternion(
+                data_models[m]['quaternion'][0],
+                data_models[m]['quaternion'][1],
+                data_models[m]['quaternion'][2],
+                data_models[m]['quaternion'][3])
+
         matrix = quaternion.matrix()
         euler = matrix.rotationsZXY()
         node_transformGeo["rotate"].setValue(euler[0] * 180 / pi, 0)
