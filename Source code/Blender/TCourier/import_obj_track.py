@@ -6,10 +6,19 @@ from .utils import load_data
 
 def apply_keyframes_import(data_import, null_data):
     data_keyframes = data_import['pgroup_keyframes']
+
+    preferences = bpy.context.preferences.addons[__package__].preferences
+    if preferences.force_scene_scale:
+        bpy.context.scene.unit_settings.scale_length = 0.01
+    scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+    bpy.context.space_data.clip_start = 10 * scene_scale_fix
+    bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+
     for frame in range(data_import['frame_start'], data_import['frame_end'] + 1):
-        null_data.location = (data_keyframes[f'{frame}']['position'][0],
-                              -data_keyframes[f'{frame}']['position'][2],
-                              data_keyframes[f'{frame}']['position'][1])
+        null_data.location = (
+            data_keyframes[f'{frame}']['position'][0] * scene_scale_fix,
+            -data_keyframes[f'{frame}']['position'][2] * scene_scale_fix,
+            data_keyframes[f'{frame}']['position'][1] * scene_scale_fix)
         null_data.keyframe_insert(data_path='location', frame=frame)
 
         vector = mathutils.Vector([
@@ -38,13 +47,22 @@ def apply_keyframes_import(data_import, null_data):
 
 def build_geo_import(data_import, null_data):
     collection_proj = bpy.data.collections["Scene_Import"]
+
+    preferences = bpy.context.preferences.addons[__package__].preferences
+    if preferences.force_scene_scale:
+        bpy.context.scene.unit_settings.scale_length = 0.01
+    scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+    bpy.context.space_data.clip_start = 10 * scene_scale_fix
+    bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+
     for model_id in data_import:
         data_model = data_import[f'{model_id}']
 
         model_name = data_model['name']
         vertices = []
         for vertex in data_model['vertices']:
-            vertices.append(data_model['vertices'][f'{vertex}'])
+            vertices.append([
+                x * scene_scale_fix for x in data_model['vertices'][f'{vertex}']])
         faces = []
         for face in data_model['faces']:
             faces.append(data_model['faces'][f'{face}'])
@@ -63,13 +81,13 @@ def build_geo_import(data_import, null_data):
         mesh.update()
 
         obj.location = (
-            data_model['position'][0],
-            -data_model['position'][2],
-            data_model['position'][1])
+            data_model['position'][0] * scene_scale_fix,
+            -data_model['position'][2] * scene_scale_fix,
+            data_model['position'][1] * scene_scale_fix)
         obj.scale = (
             data_model['scale'][0],
-            data_model['scale'][1],
-            data_model['scale'][2])
+            data_model['scale'][2],
+            data_model['scale'][1])
         vector = mathutils.Vector([
             data_model['quaternion'][0],
             data_model['quaternion'][1],

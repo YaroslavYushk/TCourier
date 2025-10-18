@@ -10,6 +10,7 @@ from . import import_obj_track
 from . import export_camera
 from . import export_geo
 from . import export_obj_track
+from . import preferences
 
 
 icon = None
@@ -107,8 +108,11 @@ def register():
     bpy.utils.register_class(TCOURIER_MT_menu_export)
     bpy.types.TOPBAR_MT_file_export.append(draw_TCourier_menu_export)
 
+    preferences.register()
+
 
 def unregister():
+    preferences.unregister()
     global icon
 
     bpy.types.VIEW3D_HT_tool_header.remove(draw_TCourier_popover)

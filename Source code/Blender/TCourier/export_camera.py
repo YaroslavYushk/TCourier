@@ -8,6 +8,8 @@ def get_camera_keyframes(cam_obj):
     frame_start = bpy.context.scene.frame_start
     frame_end = bpy.context.scene.frame_end
     keyframes_camera = {}
+    rotation_mode = cam_obj.rotation_mode
+    scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
 
     for frame in range(frame_start, frame_end + 1):
         fcurves = cam_obj.animation_data.action.fcurves
@@ -15,14 +17,14 @@ def get_camera_keyframes(cam_obj):
         quat_fix = mathutils.Quaternion(
             mathutils.Vector([1, -1, 0, 0])).normalized()
 
-        if fcurves.find('rotation_euler', index=0) is not None:
+        if rotation_mode in ['XYZ', 'XZY', 'YXZ', 'YZX', 'ZXY', 'ZYX']:
             euler = mathutils.Euler((
                 fcurves.find('rotation_euler', index=0).evaluate(frame),
                 fcurves.find('rotation_euler', index=1).evaluate(frame),
                 fcurves.find('rotation_euler', index=2).evaluate(frame)),
-                'XYZ')
+                rotation_mode)
             quaternion = quat_fix @ euler.to_quaternion().normalized()
-        elif fcurves.find('rotation_quaternion', index=0) is not None:
+        elif rotation_mode == 'QUATERNION':
             quat_orig = mathutils.Quaternion((
                 fcurves.find('rotation_quaternion', index=0).evaluate(frame),
                 fcurves.find('rotation_quaternion', index=1).evaluate(frame),
@@ -33,9 +35,10 @@ def get_camera_keyframes(cam_obj):
             return None
 
         keyframes_camera[str(frame)] = {
-            'position': [fcurves.find('location', index=0).evaluate(frame),
-                         fcurves.find('location', index=2).evaluate(frame),
-                         -fcurves.find('location', index=1).evaluate(frame)],
+            'position': [
+                fcurves.find('location', index=0).evaluate(frame) / scene_scale_fix,
+                fcurves.find('location', index=2).evaluate(frame) / scene_scale_fix,
+                -fcurves.find('location', index=1).evaluate(frame) / scene_scale_fix],
             'quaternion': [quaternion[0],
                            quaternion[1],
                            quaternion[2],
