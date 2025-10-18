@@ -10,11 +10,18 @@ def create_points(data_points, collection):
         else:
             point_obj = bpy.data.objects[f"{point_name}"]
 
+        preferences = bpy.context.preferences.addons[__package__].preferences
+        if preferences.force_scene_scale:
+            bpy.context.scene.unit_settings.scale_length = 0.01
+        scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+        bpy.context.space_data.clip_start = 10 * scene_scale_fix
+        bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+
         point_obj.empty_display_type = 'PLAIN_AXES'
         point_obj.location = [
-            data_points[f'{point_name}']['position'][0],
-            -data_points[f'{point_name}']['position'][2],
-            data_points[f'{point_name}']['position'][1]]
+            data_points[f'{point_name}']['position'][0] * scene_scale_fix,
+            -data_points[f'{point_name}']['position'][2] * scene_scale_fix,
+            data_points[f'{point_name}']['position'][1] * scene_scale_fix]
         point_obj.empty_display_size = 2
 
         if point_name not in collection.objects:

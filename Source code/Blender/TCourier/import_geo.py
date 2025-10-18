@@ -29,9 +29,19 @@ class TCourier_Import_geo(bpy.types.Operator):
         for model_id in data_models:
             model_info = data_models[f'{model_id}']
             model_name = model_info['name']
+
+            preferences = bpy.context.preferences.addons[__package__].preferences
+            if preferences.force_scene_scale:
+                bpy.context.scene.unit_settings.scale_length = 0.01
+            scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+            bpy.context.space_data.clip_start = 10 * scene_scale_fix
+            bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+
             vertices = []
             for vertex in model_info['vertices']:
-                vertices.append(model_info['vertices'][f'{vertex}'])
+                vertices.append([
+                    x * scene_scale_fix for x in model_info['vertices'][f'{vertex}']])
+
             faces = []
             for face in model_info['faces']:
                 faces.append(model_info['faces'][f'{face}'])
@@ -50,13 +60,13 @@ class TCourier_Import_geo(bpy.types.Operator):
             mesh.update()
 
             obj.location = (
-                model_info['position'][0],
-                -model_info['position'][2],
-                model_info['position'][1])
+                model_info['position'][0] * scene_scale_fix,
+                -model_info['position'][2] * scene_scale_fix,
+                model_info['position'][1] * scene_scale_fix)
             obj.scale = (
                 model_info['scale'][0],
-                model_info['scale'][1],
-                model_info['scale'][2])
+                model_info['scale'][2],
+                model_info['scale'][1])
             vector = mathutils.Vector([
                 model_info['quaternion'][0],
                 model_info['quaternion'][1],

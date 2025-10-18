@@ -12,10 +12,12 @@ def apply_camera_keyframes(cam_obj, keyframes_camera, is_zoom):
         key = list(keyframes_camera.keys())[0]
         cam_data.lens = keyframes_camera[str(key)]['focal_length']
 
+    scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
     for frame in keyframes_camera:
-        cam_obj.location = (keyframes_camera[f'{frame}']['position'][0],
-                            -keyframes_camera[f'{frame}']['position'][2],
-                            keyframes_camera[f'{frame}']['position'][1])
+        cam_obj.location = (
+            keyframes_camera[f'{frame}']['position'][0] * scene_scale_fix,
+            -keyframes_camera[f'{frame}']['position'][2] * scene_scale_fix,
+            keyframes_camera[f'{frame}']['position'][1] * scene_scale_fix)
         cam_obj.keyframe_insert(data_path='location', frame=int(frame))
 
         vector = mathutils.Vector([
@@ -64,10 +66,14 @@ class TCourier_Import_camera(bpy.types.Operator):
                 <= scene.frame_end):
             scene.frame_current = data_import['frame_start']
         scene.render.fps = int(round(data_import['fps']))
+
         scene.unit_settings.system = 'METRIC'
-        scene.unit_settings.scale_length = 0.01
-        bpy.context.space_data.clip_start = 10
-        bpy.context.space_data.clip_end = 100000
+        preferences = context.preferences.addons[__package__].preferences
+        if preferences.force_scene_scale:
+            scene.unit_settings.scale_length = 0.01
+        scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+        bpy.context.space_data.clip_start = 10 * scene_scale_fix
+        bpy.context.space_data.clip_end = 100000 * scene_scale_fix
 
         center_timeline()
 
@@ -81,8 +87,8 @@ class TCourier_Import_camera(bpy.types.Operator):
         cam_data.sensor_fit = 'HORIZONTAL'
         cam_data.sensor_height = data_import['filmback_height']
         cam_data.sensor_width = data_import['filmback_width']
-        cam_data.clip_start = data_import['clipping_near']
-        cam_data.clip_end = data_import['clipping_far']
+        cam_data.clip_start = data_import['clipping_near'] * scene_scale_fix
+        cam_data.clip_end = data_import['clipping_far'] * scene_scale_fix
 
         if cam_name not in bpy.data.objects:
             cam_obj = bpy.data.objects.new(cam_name, cam_data)

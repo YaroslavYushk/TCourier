@@ -1,3 +1,6 @@
+### v2.1.2
+* Disabling forced scene unit scale is now supported in Blender
+
 ### v2.1.1
 * Improved old versions of Nuke compatibility
 

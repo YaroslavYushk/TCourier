@@ -6,6 +6,9 @@ from .utils import save_data
 
 def get_pgroup_keyframes(pgroup_null, frame_start, frame_end):
     pgroup_keyframes = {}
+    rotation_mode = pgroup_null.rotation_mode
+    scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+
     for frame in range(frame_start, frame_end + 1):
         fcurves = pgroup_null.animation_data.action.fcurves
 
@@ -14,7 +17,7 @@ def get_pgroup_keyframes(pgroup_null, frame_start, frame_end):
         quat_fix_2 = mathutils.Quaternion(
             mathutils.Vector([1, 1, 0, 0])).normalized()
 
-        if fcurves.find('rotation_euler', index=0) is not None:
+        if rotation_mode in ['XYZ', 'XZY', 'YXZ', 'YZX', 'ZXY', 'ZYX']:
             euler = mathutils.Euler((
                 fcurves.find('rotation_euler', index=0).evaluate(frame),
                 fcurves.find('rotation_euler', index=1).evaluate(frame),
@@ -23,7 +26,7 @@ def get_pgroup_keyframes(pgroup_null, frame_start, frame_end):
             quaternion = (quat_fix
                           @ euler.to_quaternion().normalized()
                           @ quat_fix_2)
-        elif fcurves.find('rotation_quaternion', index=0) is not None:
+        elif rotation_mode == 'QUATERNION':
             quat_orig = mathutils.Quaternion((
                 fcurves.find('rotation_quaternion', index=0).evaluate(frame),
                 fcurves.find('rotation_quaternion', index=1).evaluate(frame),
@@ -35,10 +38,11 @@ def get_pgroup_keyframes(pgroup_null, frame_start, frame_end):
         else:
             return None
 
-        pgroup_keyframes[frame] = {
-            'position': [fcurves.find('location', index=0).evaluate(frame),
-                         fcurves.find('location', index=2).evaluate(frame),
-                         -fcurves.find('location', index=1).evaluate(frame)],
+        pgroup_keyframes[str(frame)] = {
+            'position': [
+                fcurves.find('location', index=0).evaluate(frame) / scene_scale_fix,
+                fcurves.find('location', index=2).evaluate(frame) / scene_scale_fix,
+                -fcurves.find('location', index=1).evaluate(frame) / scene_scale_fix],
             'quaternion': [quaternion[0],
                            quaternion[1],
                            quaternion[2],
@@ -50,6 +54,8 @@ def get_pgroup_keyframes(pgroup_null, frame_start, frame_end):
 
 def get_obj_data(obj_list):
     data_obj_export = {}
+    scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
+
     for obj in obj_list:
         quat_fix = mathutils.Quaternion(
             mathutils.Vector([1, -1, 0, 0])).normalized()
@@ -69,9 +75,9 @@ def get_obj_data(obj_list):
         mesh_vertices = {}
         for vertex in mesh.vertices:
             index = vertex.index
-            mesh_vertices[f'{index}'] = [vertex.co[0],
-                                         vertex.co[1],
-                                         vertex.co[2]]
+            mesh_vertices[f'{index}'] = [vertex.co[0] / scene_scale_fix,
+                                         vertex.co[1] / scene_scale_fix,
+                                         vertex.co[2] / scene_scale_fix]
         mesh_faces = {}
         for face in mesh.polygons:
             index = face.index
@@ -87,16 +93,16 @@ def get_obj_data(obj_list):
 
         model_info = {
             'name': obj.name,
-            'position': [obj.location[0],
-                         obj.location[2],
-                         -obj.location[1]],
+            'position': [obj.location[0] / scene_scale_fix,
+                         obj.location[2] / scene_scale_fix,
+                         -obj.location[1] / scene_scale_fix],
             'quaternion': [quaternion[0],
                            quaternion[1],
                            quaternion[2],
                            quaternion[3]],
             'scale': [obj.scale[0],
-                      obj.scale[1],
-                      obj.scale[2]],
+                      obj.scale[2],
+                      obj.scale[1]],
             'model_filepath': None,
             'vertices': mesh_vertices,
             'faces': mesh_faces,
@@ -140,7 +146,7 @@ class TCourier_Export_obj_track(bpy.types.Operator):
         frame_end = bpy.context.scene.frame_end
 
         pgroup_keyframes = get_pgroup_keyframes(
-            pgroup_null, frame_start, frame_end),
+            pgroup_null, frame_start, frame_end)
         if pgroup_keyframes is None:
             self.report({'ERROR'},
                         message=("Something went wrong"))

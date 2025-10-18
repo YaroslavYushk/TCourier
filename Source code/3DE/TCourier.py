@@ -17,7 +17,7 @@
 # 3DE4.script.addlabel: Import Obj track
 # 3DE4.script.addlabel: Import 2d track
 #
-# Version - 2.1.1
+# Version - 2.1.2
 # Author - Yaroslav Yushkevich
 # Bugs, ideas, feedback - https://github.com/YaroslavYushk/
 #
@@ -35,7 +35,6 @@ import TCourier.import_camera
 import TCourier.import_geo
 import TCourier.import_obj_track
 import TCourier.import_2d_track
-
 
 
 def tcourier_export_scene(requester, widget, action):
@@ -441,4 +440,3 @@ if __name__ == "__main__":
             tde4.postQuestionRequester(
                 "TCourier", msg, "Ok")
             result = False
-

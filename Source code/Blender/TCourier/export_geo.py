@@ -10,6 +10,7 @@ class TCourier_Export_geo(bpy.types.Operator):
     bl_description = "Export geo data as JSON file"
 
     def execute(self, context):
+        scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
         selected_objects = bpy.context.selected_objects
         if len(selected_objects) == 0:
             self.report({'ERROR'},
@@ -35,9 +36,9 @@ class TCourier_Export_geo(bpy.types.Operator):
             mesh_vertices = {}
             for vertex in mesh.vertices:
                 index = vertex.index
-                mesh_vertices[f'{index}'] = [vertex.co[0],
-                                             vertex.co[1],
-                                             vertex.co[2]]
+                mesh_vertices[f'{index}'] = [vertex.co[0] / scene_scale_fix,
+                                             vertex.co[1] / scene_scale_fix,
+                                             vertex.co[2] / scene_scale_fix]
             mesh_faces = {}
             for face in mesh.polygons:
                 index = face.index
@@ -53,16 +54,16 @@ class TCourier_Export_geo(bpy.types.Operator):
 
             model_info = {
                 'name': obj.name,
-                'position': [obj.location[0],
-                             obj.location[2],
-                             -obj.location[1]],
+                'position': [obj.location[0] / scene_scale_fix,
+                             obj.location[2] / scene_scale_fix,
+                             -obj.location[1] / scene_scale_fix],
                 'quaternion': [quaternion[0],
                                quaternion[1],
                                quaternion[2],
                                quaternion[3]],
                 'scale': [obj.scale[0],
-                          obj.scale[1],
-                          obj.scale[2]],
+                          obj.scale[2],
+                          obj.scale[1]],
                 'model_filepath': None,
                 'vertices': mesh_vertices,
                 'faces': mesh_faces,
