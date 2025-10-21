@@ -95,8 +95,7 @@ def execute():
     data_models = {}
     for model_id in model_list:
         data = get_model_data(pgroup_id, model_id, camera_id, frame)
-        model_name = tde4.get3DModelName(pgroup_id, model_id)
-        data_models[f'{model_name}'] = data
+        data_models[f'{model_id}'] = data
 
     data_export = {
         'data_models': data_models,
