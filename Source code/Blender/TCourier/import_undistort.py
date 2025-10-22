@@ -21,7 +21,10 @@ class TCourier_Import_undistort(bpy.types.Operator):
             directory=data_import['directory'],
             files=[{"name": data_import['files_name']}],
             show_multiview=False, use_udim_detecting=False)
-        undistort_seq = bpy.data.images[f'{data_import["files_name"]}']
+        files_name = f'{data_import["files_name"]}'
+        if len(files_name) > 63:
+            files_name = files_name[:63]
+        undistort_seq = bpy.data.images[files_name]
         undistort_seq.source = 'SEQUENCE'
 
         scene = bpy.context.scene
@@ -31,11 +34,12 @@ class TCourier_Import_undistort(bpy.types.Operator):
         scene.render.resolution_y = data_import['source_height']
 
         cam_name = data_import['camera_name']
+        if len(cam_name) > 63:
+            cam_name = cam_name[:63]
         if cam_name not in bpy.data.cameras:
             self.report(
                 {'ERROR'},
-                message=("There is no appropriate Camera. "
-                         "Try to import scene first"))
+                message=("There is no appropriate Camera"))
             return {'CANCELLED'}
         cam_data = bpy.data.cameras[cam_name]
         cam_data.show_background_images = True
