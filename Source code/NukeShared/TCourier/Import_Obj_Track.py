@@ -142,6 +142,33 @@ def execute():
     node_readGeo["file"].setValue(str(path_obj).replace('\\', '/'))
     node_transformGeo.connectInput(0, node_readGeo)
 
+    node_readGeo['translate'].setValue(model['position'][0], 0)
+    node_readGeo['translate'].setValue(model['position'][1], 1)
+    node_readGeo['translate'].setValue(model['position'][2], 2)
+    node_readGeo['scaling'].setValue(model['scale'][0], 0)
+    node_readGeo['scaling'].setValue(model['scale'][1], 1)
+    node_readGeo['scaling'].setValue(model['scale'][2], 2)
+
+    if (((nuke.NUKE_VERSION_MAJOR == 13) and (nuke.NUKE_VERSION_MINOR < 2))
+            or (nuke.NUKE_VERSION_MAJOR <= 12)):
+        quaternion = nuke.math.Quaternion(
+            model['quaternion'][0],
+            model['quaternion'][1],
+            model['quaternion'][2],
+            model['quaternion'][3])
+    else:
+        quaternion = nuke.nukemath.Quaternion(
+            model['quaternion'][0],
+            model['quaternion'][1],
+            model['quaternion'][2],
+            model['quaternion'][3])
+
+    matrix = quaternion.matrix()
+    euler = matrix.rotationsZXY()
+    node_readGeo["rotate"].setValue(euler[0] * 180 / pi, 0)
+    node_readGeo["rotate"].setValue(euler[1] * 180 / pi, 1)
+    node_readGeo["rotate"].setValue(euler[2] * 180 / pi, 2)
+
     node_readGeo.setXpos(node_transformGeo.xpos())
     node_readGeo.setYpos(int(
         node_transformGeo.ypos()
