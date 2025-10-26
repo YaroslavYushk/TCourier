@@ -90,6 +90,10 @@ def execute():
     camera_id = tde4.getCurrentCamera()
     if camera_id is None:
         call_error("There is no active Camera")
+    if tde4.getCameraType(camera_id) == 'REF_FRAME':
+        call_error("Active camera is Reference camera")
+    if tde4.getCameraNoFrames(camera_id) == 0:
+        call_error("Active camera has 0 frames")
 
     frame_offset = tde4.getCameraFrameOffset(camera_id)
     frame_start = frame_offset
