@@ -86,15 +86,26 @@ def execute():
     data_import = load_data('obj_track')
     if data_import is None:
         call_error("Data loading failed. The file may be missing or damaged.")
-        return
+
+    camera_id = tde4.getCurrentCamera()
+    if camera_id is None:
+        call_error("There is no active Camera")
+    if tde4.getCameraType(camera_id) == 'REF_FRAME':
+        call_error("Active camera is Reference camera")
+    if tde4.getCameraNoFrames(camera_id) == 0:
+        call_error("Active camera has 0 frames")
+
+    frame_offset = tde4.getCameraFrameOffset(camera_id)
+    frame_start = frame_offset
+    frame_end = (tde4.getCameraSequenceAttr(camera_id)[1]
+                 - tde4.getCameraSequenceAttr(camera_id)[0]
+                 + frame_offset)
+    if ((frame_start != data_import['frame_start'])
+            or (frame_end != data_import['frame_end'])):
+        call_error("Framerange mismatch")
 
     pgroup_id = tde4.createPGroup('OBJECT')
     tde4.setPGroupName(pgroup_id, data_import['pgroup_name'])
-
-    camera_id = tde4.getCurrentCamera()
-    frame_offset = tde4.getCameraFrameOffset(camera_id)
-    frame_start = data_import['frame_start']
-    frame_end = data_import['frame_end']
 
     apply_pgroup_keyframes(
         data_import['pgroup_keyframes'], pgroup_id, camera_id,

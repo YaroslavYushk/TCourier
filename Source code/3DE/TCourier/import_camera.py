@@ -60,14 +60,13 @@ def execute():
         if tde4.getPGroupType(pgroup_check) == 'CAMERA':
             pgroup_id = pgroup_check
     if pgroup_id is None:
-        call_error("There is no Point group woth `Camera` type")
+        call_error("There is no Point group with `Camera` type")
 
-    camera_list = tde4.getCameraList()
-    if len(camera_list) == 0:
-        call_error("You have no cameras")
     camera_id = tde4.getCurrentCamera()
+    if camera_id is None:
+        call_error("There is no active Camera")
     if tde4.getCameraType(camera_id) != 'SEQUENCE':
-        call_error('Your current camera is not `Sequence` type')
+        call_error("Your active camera is not `Sequence` type")
     frame_offset = tde4.getCameraFrameOffset(camera_id)
     frame_start = frame_offset
     frame_end = (tde4.getCameraSequenceAttr(camera_id)[1]

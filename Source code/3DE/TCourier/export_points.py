@@ -31,12 +31,16 @@ def get_points_data(pgroup_id):
 
 def execute():
     camera_id = tde4.getCurrentCamera()
-    if camera_id is None: call_error('There is no active Camera')
+    if camera_id is None:
+        call_error("There is no active Camera")
     if tde4.getCameraType(camera_id) == 'REF_FRAME':
-        call_error('Active camera is Reference camera')
+        call_error("Active camera is Reference camera")
+    if tde4.getCameraNoFrames(camera_id) == 0:
+        call_error("Active camera has 0 frames")
 
     pgroup_id = tde4.getCurrentPGroup()
-    if pgroup_id == 0: call_error('There is no Point group')
+    if pgroup_id == 0:
+        call_error('There is no Point group')
     if tde4.getPGroupType(pgroup_id) != 'CAMERA':
         call_error('Current Point Group is not `Camera` type')
 

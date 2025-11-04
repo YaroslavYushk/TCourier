@@ -24,11 +24,16 @@ def get_point_2d_coords(pgroup_id, point_id, camera_id, frames, frames_offset):
 
 def execute():
     camera_id = tde4.getCurrentCamera()
-    pgroup_id = tde4.getCurrentPGroup()
-    if (camera_id is None) or (pgroup_id is None):
-        call_error("There is no Camera or Point Group")
+    if camera_id is None:
+        call_error("There is no active Camera")
     if tde4.getCameraType(camera_id) == 'REF_FRAME':
-        call_error("Active camera has `Reference` type")
+        call_error("Active camera is Reference camera")
+    if tde4.getCameraNoFrames(camera_id) == 0:
+        call_error("Active camera has 0 frames")
+
+    pgroup_id = tde4.getCurrentPGroup()
+    if pgroup_id is None:
+        call_error("There is no Point Group")
 
     frames = tde4.getCameraNoFrames(camera_id)
     frame_offset = tde4.getCameraFrameOffset(camera_id)

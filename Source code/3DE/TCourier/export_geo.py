@@ -71,13 +71,18 @@ def get_model_data(pgroup_id, model_id, camera_id, frame):
 
 def execute():
     camera_id = tde4.getCurrentCamera()
-    if camera_id is None: call_error('There is no active Camera')
+    if camera_id is None:
+        call_error("There is no active Camera")
     if tde4.getCameraType(camera_id) == 'REF_FRAME':
-        call_error('Active camera is Reference camera')
+        call_error("Active camera is Reference camera")
+    if tde4.getCameraNoFrames(camera_id) == 0:
+        call_error("Active camera has 0 frames")
+
     frame = tde4.getCurrentFrame(camera_id)
 
     pgroup_id = tde4.getCurrentPGroup()
-    if pgroup_id == 0: call_error('There is no Point group')
+    if pgroup_id == 0:
+        call_error('There is no Point group')
     if tde4.getPGroupType(pgroup_id) != 'CAMERA':
         call_error('Current Point Group is not `Camera` type')
 
@@ -95,8 +100,7 @@ def execute():
     data_models = {}
     for model_id in model_list:
         data = get_model_data(pgroup_id, model_id, camera_id, frame)
-        model_name = tde4.get3DModelName(pgroup_id, model_id)
-        data_models[f'{model_name}'] = data
+        data_models[f'{model_id}'] = data
 
     data_export = {
         'data_models': data_models,

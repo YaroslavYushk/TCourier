@@ -42,6 +42,16 @@ def get_mesh_data_from_file(file_path):
 
 
 def get_model_data(node_ReadGeo):
+    model_filepath = nuke.filename(node_ReadGeo)
+    if model_filepath.startswith("."):
+        model_filepath = make_relative_path_absolute(model_filepath)
+
+    if model_filepath.endswith(".obj"):
+        vertices, faces = get_mesh_data_from_file(model_filepath)
+    else:
+        call_error("One of your models is not in .obj format and was not exported")
+        return None
+
     geo_matrix = node_ReadGeo["matrix"].getValueAt(nuke.frame())
     geo_matrix = build_matrix_4x4_from_list(geo_matrix)
 
@@ -57,12 +67,6 @@ def get_model_data(node_ReadGeo):
     scale = get_scale_from_matrix_4x4(geo_matrix)
     rotation_mat = get_rotation_matrix_from_matrix_4x4(geo_matrix)
     quaternion = get_quaternion_from_rotation_matrix_4x4(rotation_mat)
-
-    model_filepath = nuke.filename(node_ReadGeo)
-    if model_filepath.startswith("."):
-        model_filepath = make_relative_path_absolute(model_filepath)
-
-    vertices, faces = get_mesh_data_from_file(model_filepath)
 
     data_model = {
         'name': node_ReadGeo.name(),
@@ -89,7 +93,11 @@ def execute():
     data_models = {}
     for node in geo_nodes:
         data = get_model_data(node)
-        data_models[str(node.name())] = data
+        if data is not None:
+            data_models[str(node.name())] = data
+    if data_models == {}:
+        call_error("No data were exported")
+        return
 
     data_export = {
         'data_models': data_models,

@@ -29,15 +29,20 @@ def get_camera_data(pgroup_id, camera_id, frame_start, frame_end, frame_offset):
 
 
 def execute():
+    camera_id = tde4.getCurrentCamera()
+    if camera_id is None:
+        call_error("There is no active Camera")
+    if tde4.getCameraType(camera_id) == 'REF_FRAME':
+        call_error("Active camera is Reference camera")
+    if tde4.getCameraNoFrames(camera_id) == 0:
+        call_error("Active camera has 0 frames")
+
     pgroup_id = tde4.getCurrentPGroup()
-    if pgroup_id == 0: call_error('There is no Point group')
+    if pgroup_id is None:
+        call_error("There is no Point Group")
     if tde4.getPGroupType(pgroup_id) != 'CAMERA':
         call_error('Current Point Group is not `Camera` type')
 
-    camera_id = tde4.getCurrentCamera()
-    if camera_id is None: call_error('There is no active Camera')
-    if tde4.getCameraType(camera_id) == 'REF_FRAME':
-        call_error('Active camera is Reference camera')
     camera_name = tde4.getCameraName(camera_id)
     camera_fps = tde4.getCameraFPS(camera_id)
     frame_offset = tde4.getCameraFrameOffset(camera_id)
@@ -56,8 +61,12 @@ def execute():
     lens_fback_height = tde4.getLensFBackHeight(lens_id) * 10
     print('TCourier: Lens data obtained successfully')
 
-    if tde4.getCameraZoomingFlag(camera_id) == 1: is_zoom = True
-    else: is_zoom = False
+    if tde4.getCameraZoomingFlag(camera_id) == 1:
+        is_zoom = True
+    else:
+        is_zoom = False
+    clipping_near = tde4.getNearClippingPlane()
+    clipping_far = tde4.getFarClippingPlane()
 
     data_export = {
         'camera_name': camera_name,
@@ -67,8 +76,8 @@ def execute():
         'frame_end': frame_end,
         'fps': camera_fps,
         'is_zoom': is_zoom,
-        'clipping_near': tde4.getNearClippingPlane(),
-        'clipping_far': tde4.getFarClippingPlane(),
+        'clipping_near': clipping_near,
+        'clipping_far': clipping_far,
         'keyframes_camera': keyframes_camera,
     }
 
