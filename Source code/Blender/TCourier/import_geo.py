@@ -34,8 +34,8 @@ class TCourier_Import_geo(bpy.types.Operator):
             if preferences.force_scene_scale:
                 bpy.context.scene.unit_settings.scale_length = 0.01
             scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
-            bpy.context.space_data.clip_start = 10 * scene_scale_fix
-            bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+            if preferences.force_scene_scale:
+                bpy.context.scene.unit_settings.scale_length = 0.01
 
             vertices = []
             for vertex in model_info['vertices']:

@@ -13,6 +13,18 @@ from . import export_obj_track
 from . import preferences
 
 
+# for development and testing purpose only
+from importlib import reload
+import_camera = reload(import_camera)
+import_points = reload(import_points)
+import_geo = reload(import_geo)
+import_undistort = reload(import_undistort)
+import_obj_track = reload(import_obj_track)
+export_camera = reload(export_camera)
+export_geo = reload(export_geo)
+export_obj_track = reload(export_obj_track)
+
+
 icon = None
 
 
