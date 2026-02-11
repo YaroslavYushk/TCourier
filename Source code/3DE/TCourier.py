@@ -17,7 +17,7 @@
 # 3DE4.script.addlabel: Import Obj track
 # 3DE4.script.addlabel: Import 2d track
 #
-# Version - 2.1.2
+# Version - 2.1.4
 # Author - Yaroslav Yushkevich
 # Bugs, ideas, feedback - https://github.com/YaroslavYushk/
 #
@@ -440,3 +440,4 @@ if __name__ == "__main__":
             tde4.postQuestionRequester(
                 "TCourier", msg, "Ok")
             result = False
+
