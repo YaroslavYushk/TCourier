@@ -1,5 +1,6 @@
 import bpy
 import mathutils
+from bpy_extras import anim_utils
 
 from .utils import save_data
 
@@ -12,7 +13,13 @@ def get_camera_keyframes(cam_obj):
     scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
 
     for frame in range(frame_start, frame_end + 1):
-        fcurves = cam_obj.animation_data.action.fcurves
+        if bpy.app.version >= (4, 4, 0):
+            anim_data = cam_obj.animation_data
+            channelbag = anim_utils.action_get_channelbag_for_slot(
+                anim_data.action, anim_data.action_slot)
+            fcurves = channelbag.fcurves
+        else:
+            fcurves = cam_obj.animation_data.action.fcurves
 
         quat_fix = mathutils.Quaternion(
             mathutils.Vector([1, -1, 0, 0])).normalized()
@@ -64,7 +71,14 @@ class TCourier_Export_camera(bpy.types.Operator):
 
         is_zoom = False
         if cam_obj.animation_data and cam_obj.animation_data.action:
-            for fcurve in cam_obj.animation_data.action.fcurves:
+            if bpy.app.version >= (4, 4, 0):
+                anim_data = cam_obj.animation_data
+                channelbag = anim_utils.action_get_channelbag_for_slot(
+                    anim_data.action, anim_data.action_slot)
+                fcurves = channelbag.fcurves
+            else:
+                fcurves = cam_obj.animation_data.action.fcurves
+            for fcurve in fcurves:
                 if fcurve.data_path == "lens":
                     is_zoom = True
 

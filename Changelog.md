@@ -1,3 +1,8 @@
+### v2.1.4
+* Updated script for Blender 5.0 compatibility  
+* Fixed an issue where TCourier would not run correctly when launched from Blender's import menu  
+* Removed automatic clipping distance adjustment for the 3D Viewport in Blender
+
 ### v2.1.3
 * Fixed a bug in 3DEqualizer where geo with same names couln't be saved properly
 * Fixed a bug in Nuke where geometry transforms weren't imported for object tracks

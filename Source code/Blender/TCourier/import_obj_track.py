@@ -52,8 +52,8 @@ def build_geo_import(data_import, null_data):
     if preferences.force_scene_scale:
         bpy.context.scene.unit_settings.scale_length = 0.01
     scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
-    bpy.context.space_data.clip_start = 10 * scene_scale_fix
-    bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+    if preferences.force_scene_scale:
+        bpy.context.scene.unit_settings.scale_length = 0.01
 
     for model_id in data_import:
         data_model = data_import[f'{model_id}']

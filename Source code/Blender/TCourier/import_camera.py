@@ -69,11 +69,9 @@ class TCourier_Import_camera(bpy.types.Operator):
 
         scene.unit_settings.system = 'METRIC'
         preferences = context.preferences.addons[__package__].preferences
-        if preferences.force_scene_scale:
-            scene.unit_settings.scale_length = 0.01
         scene_scale_fix = 0.01 / bpy.context.scene.unit_settings.scale_length
-        bpy.context.space_data.clip_start = 10 * scene_scale_fix
-        bpy.context.space_data.clip_end = 100000 * scene_scale_fix
+        if preferences.force_scene_scale:
+            bpy.context.scene.unit_settings.scale_length = 0.01
 
         center_timeline()
 
